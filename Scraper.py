@@ -1,4 +1,4 @@
-from urllib.request import urlopen
+from urllib.request import urlopen, urlretrieve
 from bs4 import BeautifulSoup as bs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -19,15 +19,26 @@ URL_BASE = "https://www.google.com/search?q={}&tbm=isch"
 driver = webdriver.Firefox()
 wait = WebDriverWait(driver,10)
 
-def salvar_fotos(pagina,n_exemplos):
-    html = pagina.read().decode('utf-8')
-    soup = bs(html,"html.parser")
+def salvar_fotos(pagina,n_exemplos=10):
+    soup = bs(pagina,"html.parser")
+    imgs = soup.find_all('img',class_='rg_i')
+
+    for i in range(len(imgs)):
+        img = imgs[i]
+        filename = f"car_{i+1}.jpg"
+        try:
+            urlretrieve(img['src'],f"imagens/{filename}")
+        except:
+            pass
 
 def obter_exemplos(nomes,destino=None):
     for nome in nomes:
         nome = nome.replace(" ","+")
         url = URL_BASE.replace("{}",nome)
         driver.get(url)
-        print(driver.page_source)
+        salvar_fotos(driver.page_source)
+        # print(driver.page_source)
 
 obter_exemplos(nomes_dos_carros)
+
+driver.close()
