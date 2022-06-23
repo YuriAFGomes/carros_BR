@@ -12,8 +12,8 @@ with open('categorias.txt') as file:
 caminho_destino = "imagens"
 N_EXEMPLOS = 500
 URL_BASE = "https://www.google.com/search?q={}&tbm=isch"
+
 driver = webdriver.Firefox()
-wait = WebDriverWait(driver,10)
 
 def salvar_fotos(categoria,pagina,n_exemplos=10):
     soup = bs(pagina,"html.parser")
