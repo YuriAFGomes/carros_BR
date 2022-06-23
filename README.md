@@ -1,1 +1,1 @@
-Modelo de classificação de imagens de carros comercializados no Brasil até 2001.
+Modelo de classificação de imagens dos 10 carros mais vendidos do Brasil.
