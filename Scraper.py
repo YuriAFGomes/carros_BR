@@ -8,53 +8,58 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from config import SCRAPER_CONFIG
+
 with open('categorias.txt') as file:
     categorias = file.readlines()
-
-caminho_destino = "imagens"
-N_EXEMPLOS = 50
-URL_BASE = "https://www.google.com/search?q={}&tbm=isch"
 
 driver = webdriver.Firefox()
 wait = WebDriverWait(driver,10)
 
-def fetch_imgs():
-    time.sleep(0.3)
-    source = driver.page_source
+def fetch_imgs(source):
     soup = bs(source,"html.parser")
     imgs = soup.find_all('img',class_='rg_i')
     return imgs
 
-def salvar_fotos(categoria,pagina,n_exemplos):
+def salvar_fotos(url_base,caminho_destino,categoria,n_exemplos):
     categoria = categoria.replace('\n','')
     nome_url = categoria.replace(" ","+")
-    url = URL_BASE.replace("{}",nome_url)
+    url = url_base.replace("{}",nome_url)
     driver.get(url)
-    imgs = fetch_imgs()
-    n_imgs = len(imgs)
+    imgs = fetch_imgs(driver.page_source)
 
-    while n_imgs < n_exemplos+24:
+    while len(imgs) < n_exemplos+50:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        imgs = fetch_imgs()
-        n_imgs = len(imgs)
+        imgs = fetch_imgs(driver.page_source)
 
     if categoria not in os.listdir(caminho_destino):
         os.mkdir(f"{caminho_destino}/{categoria}")
 
-    for i in range(min(n_exemplos,len(imgs))):
+    img_n=1
+    for i in range(len(imgs)):
         img = imgs[i]
-        filename = f"{i+1}.jpg"
+        filename = f"{img_n}.jpg"
         try:
             urlretrieve(img['src'],f"{caminho_destino}/{categoria}/{filename}")
+            img_n+=1
         except:
-            pass
+            try:
+                urlretrieve(img['data-src'],f"{caminho_destino}/{categoria}/{filename}")
+                img_n+=1
+            except:
+                traceback.print_exc()
 
-def obter_exemplos(categorias,caminho_destino,n_exemplos=50):
+def obter_exemplos(url_base,categorias,caminho_destino,n_exemplos):
     for nome in categorias:
-        salvar_fotos(nome,driver.page_source,n_exemplos)
+        salvar_fotos(url_base,caminho_destino,nome,n_exemplos)
 
 try:
-    obter_exemplos(categorias,caminho_destino)
+    obter_exemplos(
+        SCRAPER_CONFIG['url_base'],
+        categorias,
+        SCRAPER_CONFIG['caminho_destino'],
+        SCRAPER_CONFIG['n_exemplos']
+    )
 except:
     traceback.print_exc()
 finally:
