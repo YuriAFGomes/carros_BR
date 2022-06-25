@@ -10,21 +10,27 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from config import SCRAPER_CONFIG
 
-def fetch_imgs(source):
+def listar_imgs(source):
     soup = bs(source,"html.parser")
     imgs = soup.find_all('img',class_='rg_i')
     return imgs
 
+def obter_imgs(url,n_exemplos,driver):
+    driver.get(url)
+    imgs = listar_imgs(driver.page_source)
+
+    while len(imgs) < n_exemplos+20:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        imgs = listar_imgs(driver.page_source)
+    return imgs
+
 def salvar_fotos(url_base,caminho_destino,categoria,n_exemplos):
+    driver = webdriver.Firefox()
+    wait = WebDriverWait(driver,10)
     categoria = categoria.replace('\n','')
     nome_url = categoria.replace(" ","+")
     url = url_base.replace("{}",nome_url)
-    driver.get(url)
-    imgs = fetch_imgs(driver.page_source)
-
-    while len(imgs) < n_exemplos+50:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        imgs = fetch_imgs(driver.page_source)
+    imgs = obter_imgs(url,n_exemplos,driver)
 
     if categoria not in os.listdir(caminho_destino):
         os.mkdir(f"{caminho_destino}/{categoria}")
@@ -42,6 +48,7 @@ def salvar_fotos(url_base,caminho_destino,categoria,n_exemplos):
                 img_n+=1
             except:
                 traceback.print_exc()
+    driver.close()
 
 def obter_exemplos(url_base,categorias,caminho_destino,n_exemplos):
     for nome in categorias:
@@ -50,8 +57,7 @@ def obter_exemplos(url_base,categorias,caminho_destino,n_exemplos):
 def main():
     with open('categorias.txt') as file:
         categorias = file.readlines()
-    driver = webdriver.Firefox()
-    wait = WebDriverWait(driver,10)
+
     try:
         obter_exemplos(
             SCRAPER_CONFIG['url_base'],
@@ -61,8 +67,6 @@ def main():
         )
     except:
         traceback.print_exc()
-    finally:
-        driver.close()
 
 if __name__ == '__main__':
     main()
