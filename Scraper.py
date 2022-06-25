@@ -1,4 +1,4 @@
-import os, traceback, time
+import os, traceback
 
 from urllib.request import urlopen, urlretrieve
 from bs4 import BeautifulSoup as bs
