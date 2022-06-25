@@ -10,12 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from config import SCRAPER_CONFIG
 
-with open('categorias.txt') as file:
-    categorias = file.readlines()
-
-driver = webdriver.Firefox()
-wait = WebDriverWait(driver,10)
-
 def fetch_imgs(source):
     soup = bs(source,"html.parser")
     imgs = soup.find_all('img',class_='rg_i')
@@ -53,14 +47,22 @@ def obter_exemplos(url_base,categorias,caminho_destino,n_exemplos):
     for nome in categorias:
         salvar_fotos(url_base,caminho_destino,nome,n_exemplos)
 
-try:
-    obter_exemplos(
-        SCRAPER_CONFIG['url_base'],
-        categorias,
-        SCRAPER_CONFIG['caminho_destino'],
-        SCRAPER_CONFIG['n_exemplos']
-    )
-except:
-    traceback.print_exc()
-finally:
-    driver.close()
+def main():
+    with open('categorias.txt') as file:
+        categorias = file.readlines()
+    driver = webdriver.Firefox()
+    wait = WebDriverWait(driver,10)
+    try:
+        obter_exemplos(
+            SCRAPER_CONFIG['url_base'],
+            categorias,
+            SCRAPER_CONFIG['caminho_destino'],
+            SCRAPER_CONFIG['n_exemplos']
+        )
+    except:
+        traceback.print_exc()
+    finally:
+        driver.close()
+
+if __name__ == '__main__':
+    main()
