@@ -18,7 +18,7 @@ def obter_imgs(url,n_exemplos,driver):
     driver.get(url)
     imgs = listar_imgs(driver.page_source)
 
-    while len(imgs) < n_exemplos+20:
+    while len(imgs) < n_exemplos:
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         imgs = listar_imgs(driver.page_source)
     return imgs
@@ -41,7 +41,10 @@ def salvar_fotos(url_base,caminho_destino,categoria,n_exemplos,driver):
             img_n+=1
         except:
             try:
-                urlretrieve(img['data-src'],f"{caminho_destino}/{categoria}/{filename}")
+                urlretrieve(
+                img['data-src'],
+                f"{caminho_destino}/{categoria}/{filename}"
+                )
                 img_n+=1
             except:
                 traceback.print_exc()

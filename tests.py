@@ -14,7 +14,9 @@ class TestScraper(TestCase):
         cls.categorias = ['Chevrolet Opala 1977','Ford Corcel 1977']
         if 'imagens_teste' not in os.listdir():
             os.mkdir('imagens_teste')
-        cls.url = SCRAPER_TEST_CONFIG['url_base'].replace("{}","Chevrolet+Opala+1977")
+        cls.url = SCRAPER_TEST_CONFIG['url_base'].replace(
+        "{}","Chevrolet+Opala+1977"
+        )
         cls.driver.get(cls.url)
         cls.source = cls.driver.page_source
 
@@ -27,9 +29,18 @@ class TestScraper(TestCase):
         self.assertTrue(len(imgs)>=150)
 
     def test_salvar_fotos(self):
-        salvar_fotos(self.url,'imagens_teste','Chevrolet Opala 1977',10,self.driver)
+        salvar_fotos(
+        self.url,
+        'imagens_teste',
+        'Chevrolet Opala 1977',
+        10,
+        self.driver
+        )
         self.assertTrue('Chevrolet Opala 1977' in os.listdir('imagens_teste'))
-        self.assertEqual(10,len(os.listdir('imagens_teste/Chevrolet Opala 1977')))
+        self.assertEqual(
+        10,
+        len(os.listdir('imagens_teste/Chevrolet Opala 1977'))
+        )
 
     def test_obter_exemplos(self):
         obter_exemplos(
@@ -42,7 +53,10 @@ class TestScraper(TestCase):
         self.assertEqual(2,len(os.listdir('imagens_teste')))
         self.assertTrue('Chevrolet Opala 1977' in os.listdir('imagens_teste'))
         self.assertTrue('Ford Corcel 1977' in os.listdir('imagens_teste'))
-        self.assertEqual(10,len(os.listdir('imagens_teste/Chevrolet Opala 1977')))
+        self.assertEqual(
+        10,
+        len(os.listdir('imagens_teste/Chevrolet Opala 1977'))
+        )
         self.assertEqual(10,len(os.listdir('imagens_teste/Ford Corcel 1977')))
 
     @classmethod
