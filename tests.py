@@ -3,7 +3,6 @@ from unittest import TestCase
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 
-
 from Scraper import listar_imgs,obter_imgs,salvar_fotos,obter_exemplos
 from config import SCRAPER_TEST_CONFIG
 
