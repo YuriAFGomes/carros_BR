@@ -26,6 +26,7 @@ def obter_imgs(url,n_exemplos,driver):
     driver.get(url)
     imgs = listar_imgs(driver.page_source)
     while len(imgs) < n_exemplos:
+        print(len(imgs))
         rolar_pagina(driver)
         imgs = listar_imgs(driver.page_source)
     return imgs
@@ -58,6 +59,10 @@ def salvar_fotos(url_base,caminho_destino,categoria,n_exemplos,driver):
 
 def obter_exemplos(url_base,categorias,caminho_destino,n_exemplos):
     driver = webdriver.Firefox()
+
+    if caminho_destino not in os.listdir():
+        os.mkdir(caminho_destino)
+
     for nome in categorias:
         salvar_fotos(url_base,caminho_destino,nome,n_exemplos,driver)
     driver.close()

@@ -61,7 +61,7 @@ class TestScraper(TestCase):
     def test_mais_resultados(self):
         imgs = obter_imgs(self.url,500,self.driver)
         self.assertTrue(len(imgs)>=500)
-        
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree('imagens_teste')
