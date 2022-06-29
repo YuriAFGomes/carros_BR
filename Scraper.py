@@ -14,12 +14,19 @@ def listar_imgs(source):
     imgs = soup.find_all('img',class_='rg_i')
     return imgs
 
+def rolar_pagina(driver):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    try:
+        mais_resultados = driver.find_element(By.XPATH,"//input[@class='mye4qd']")
+        mais_resultados.click()
+    except:
+        pass
+
 def obter_imgs(url,n_exemplos,driver):
     driver.get(url)
     imgs = listar_imgs(driver.page_source)
-
     while len(imgs) < n_exemplos:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        rolar_pagina(driver)
         imgs = listar_imgs(driver.page_source)
     return imgs
 

@@ -58,6 +58,10 @@ class TestScraper(TestCase):
         )
         self.assertEqual(10,len(os.listdir('imagens_teste/Ford Corcel 1977')))
 
+    def test_mais_resultados(self):
+        imgs = obter_imgs(self.url,500,self.driver)
+        self.assertTrue(len(imgs)>=500)
+        
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree('imagens_teste')
