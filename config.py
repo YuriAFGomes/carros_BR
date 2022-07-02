@@ -1,5 +1,5 @@
 SCRAPER_CONFIG = {
-'caminho_destino':"imagens_2",
+'caminho_destino':"imagens",
 'n_exemplos':600,
 'url_base':"https://www.google.com/search?q={}&tbm=isch",
 }
