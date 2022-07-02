@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from Scraper import listar_imgs,obter_imgs,salvar_fotos,obter_exemplos
 from config import SCRAPER_TEST_CONFIG
+from dataset import Dataset
 
 class TestScraper(TestCase):
     @classmethod
@@ -18,7 +19,8 @@ class TestScraper(TestCase):
         )
         cls.driver.get(cls.url)
         cls.source = cls.driver.page_source
-
+        cls.dataset = Dataset(SCRAPER_TEST_CONFIG['caminho_destino'])
+    
     def test_listar_imgs(self):
         imgs = listar_imgs(self.source)
         self.assertTrue(len(imgs)>20)
@@ -30,10 +32,10 @@ class TestScraper(TestCase):
     def test_salvar_fotos(self):
         salvar_fotos(
         self.url,
-        'imagens_teste',
         'Chevrolet Opala 1977',
         10,
-        self.driver
+        self.driver,
+        self.dataset
         )
         self.assertTrue('Chevrolet Opala 1977' in os.listdir('imagens_teste'))
         self.assertEqual(
@@ -45,8 +47,8 @@ class TestScraper(TestCase):
         obter_exemplos(
             SCRAPER_TEST_CONFIG['url_base'],
             self.categorias,
-            SCRAPER_TEST_CONFIG['caminho_destino'],
-            SCRAPER_TEST_CONFIG['n_exemplos']
+            SCRAPER_TEST_CONFIG['n_exemplos'],
+            self.dataset
         )
         self.assertTrue('imagens_teste' in os.listdir())
         self.assertEqual(2,len(os.listdir('imagens_teste')))
