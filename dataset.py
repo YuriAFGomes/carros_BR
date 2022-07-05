@@ -1,5 +1,11 @@
 import os, traceback
+from pathlib import Path
+
 import numpy as np
+from skimage.io import imread
+from skimage.metrics import structural_similarity
+from skimage.transform import resize
+from PIL import Image
 from urllib.request import urlretrieve
 
 class Dataset:
@@ -8,23 +14,46 @@ class Dataset:
             self.destino = destino
             if destino not in os.listdir():
                 os.mkdir(destino)
+        self.limiar_similaridade = 0.95
 
     def definir_destino(self,destino):
         self.destino = destino
         if self.destino not in os.listdir():
             os.mkdir(self.destino)
 
+    def comparar_imagens(self,imagem,imagem_2):
+        imagem = imread(imagem)
+        imagem_2 = imread(imagem_2)
+        imagem = resize(imagem,imagem_2.shape)
+        print(structural_similarity(imagem,imagem_2,channel_axis=2))
+        return structural_similarity(imagem,imagem_2,channel_axis=2) > self.limiar_similaridade
+
+    def e_unico(self,caminho):
+        caminho = Path(caminho)
+        parent = Path(caminho).parent
+        for caminho_2 in os.listdir(parent):
+            caminho_2 = os.path.join(parent,caminho_2)
+            if os.path.samefile(caminho,caminho_2):
+                continue
+            if self.comparar_imagens(caminho,caminho_2):
+                return False
+        return True
+
     def adicionar_imagem(self,img,categoria,filename):
+        caminho = f"{self.destino}/{categoria}/{filename}"
         try:
-            urlretrieve(img['src'],f"{self.destino}/{categoria}/{filename}")
+            file,info = urlretrieve(img['src'],caminho)
         except:
             try:
-                urlretrieve(
+                file,info = urlretrieve(
                 img['data-src'],
-                f"{self.destino}/{categoria}/{filename}"
+                caminho
                 )
             except:
                 traceback.print_exc()
+
+        if not self.e_unico(file):
+            os.remove(file)
 
     def adicionar_imagens(self,imgs,categoria,n_exemplos):
         if categoria not in os.listdir(self.destino):

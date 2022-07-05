@@ -12,15 +12,16 @@ class TestScraper(TestCase):
     def setUpClass(cls):
         cls.driver = webdriver.Firefox()
         cls.categorias = ['Chevrolet Opala 1977','Ford Corcel 1977']
-        if 'imagens_teste' not in os.listdir():
-            os.mkdir('imagens_teste')
+        cls.diretorio = SCRAPER_TEST_CONFIG['caminho_destino']
+        if cls.diretorio not in os.listdir():
+            os.mkdir(cls.diretorio)
         cls.url = SCRAPER_TEST_CONFIG['url_base'].replace(
         "{}","Chevrolet+Opala+1977"
         )
         cls.driver.get(cls.url)
         cls.source = cls.driver.page_source
         cls.dataset = Dataset(SCRAPER_TEST_CONFIG['caminho_destino'])
-    
+
     def test_listar_imgs(self):
         imgs = listar_imgs(self.source)
         self.assertTrue(len(imgs)>20)
@@ -43,6 +44,19 @@ class TestScraper(TestCase):
         len(os.listdir('imagens_teste/Chevrolet Opala 1977'))
         )
 
+    def test_nao_salvar_foto_repetida(self):
+        url = SCRAPER_TEST_CONFIG['url_base'].replace(
+        "{}","Volkswagen SP2"
+        )
+        if "Volkswagen SP2" not in os.listdir(self.diretorio):
+            os.mkdir(os.path.join(self.diretorio,"Volkswagen SP2"))
+
+        img = obter_imgs(self.url,1,self.driver)[0]
+        self.dataset.adicionar_imagem(img,"Volkswagen SP2",'1.jpg')
+        self.dataset.adicionar_imagem(img,"Volkswagen SP2",'2.jpg')
+        self.assertEqual(1,len(os.listdir("imagens_teste/Volkswagen SP2")))
+
+
     def test_obter_exemplos(self):
         obter_exemplos(
             SCRAPER_TEST_CONFIG['url_base'],
@@ -51,7 +65,7 @@ class TestScraper(TestCase):
             self.dataset
         )
         self.assertTrue('imagens_teste' in os.listdir())
-        self.assertEqual(2,len(os.listdir('imagens_teste')))
+        self.assertTrue(2<=len(os.listdir('imagens_teste')))
         self.assertTrue('Chevrolet Opala 1977' in os.listdir('imagens_teste'))
         self.assertTrue('Ford Corcel 1977' in os.listdir('imagens_teste'))
         self.assertEqual(
