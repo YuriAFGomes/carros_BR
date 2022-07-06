@@ -45,6 +45,8 @@ class Dataset:
             caminho_2 = os.path.join(parent,caminho_2)
             if os.path.samefile(caminho,caminho_2):
                 continue
+            if os.path.isdir(caminho_2):
+                continue
             if self.comparar_imagens(caminho,caminho_2):
                 return False
         return True
@@ -68,10 +70,14 @@ class Dataset:
     def adicionar_imagens(self,imgs,categoria,n_exemplos):
         if categoria not in os.listdir(self.destino):
             os.mkdir(f"{self.destino}/{categoria}")
+            os.mkdir(f"{self.destino}/{categoria}/descartadas")
 
         img_n=1
         for i in range(n_exemplos):
-            img = imgs[i]
+            try:
+                img = imgs[i]
+            except:
+                break
             filename = f"{img_n}.jpg"
             self.adicionar_imagem(img,categoria,filename)
             img_n+=1

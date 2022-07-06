@@ -30,8 +30,10 @@ def obter_imgs(url,n_exemplos,driver):
     driver.get(url)
     imgs = listar_imgs(driver.page_source)
     while len(imgs) < n_exemplos:
+        n_atual = len(imgs)
         rolar_pagina(driver)
         imgs = listar_imgs(driver.page_source)
+        
     return imgs
 
 def salvar_fotos(url_base,categoria,n_exemplos,driver,dataset):

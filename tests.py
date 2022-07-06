@@ -67,10 +67,10 @@ class TestScraper(TestCase):
         self.assertTrue('Chevrolet Opala 1977' in os.listdir('imagens_teste'))
         self.assertTrue('Ford Corcel 1977' in os.listdir('imagens_teste'))
         self.assertEqual(
-        10,
+        11,
         len(os.listdir('imagens_teste/Chevrolet Opala 1977'))
         )
-        self.assertEqual(10,len(os.listdir('imagens_teste/Ford Corcel 1977')))
+        self.assertEqual(11,len(os.listdir('imagens_teste/Ford Corcel 1977')))
 
     def test_mais_resultados(self):
         imgs = obter_imgs(self.url,500,self.driver)
