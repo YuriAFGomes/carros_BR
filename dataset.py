@@ -38,9 +38,6 @@ class Dataset:
 
         imagem_menor = resize(imagem_menor,imagem_maior.shape)
         imagem_maior = img_as_float(imagem_maior)
-        print(imagem_menor.dtype,imagem_maior.dtype)
-
-        print(structural_similarity(imagem_menor,imagem_maior,channel_axis=-1))
         return structural_similarity(imagem_menor,imagem_maior,channel_axis=-1) > self.limiar_similaridade
 
     def e_unico(self,caminho):
