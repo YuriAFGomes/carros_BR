@@ -26,10 +26,8 @@ class Dataset:
     def comparar_imagens(self,imagem,imagem_2):
         imagem = imread(imagem)
         imagem_2 = imread(imagem_2)
-        print(imagem.dtype,imagem_2.dtype)
 
-
-        if imagem.shape[0] * imagem.shape[1] > imagem_2.shape[0] * imagem_2.shape[1]:
+        if imagem.size > imagem_2.size:
             imagem_maior = imagem
             imagem_menor = imagem_2
         else:

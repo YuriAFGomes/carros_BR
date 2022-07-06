@@ -43,8 +43,6 @@ class TestScraper(TestCase):
         len(os.listdir('imagens_teste/Chevrolet Opala 1977')) >= 7
         )
 
-
-
     def test_nao_salvar_foto_repetida(self):
         url = SCRAPER_TEST_CONFIG['url_base'].replace(
         "{}","Volkswagen SP2"
@@ -56,7 +54,6 @@ class TestScraper(TestCase):
         self.dataset.adicionar_imagem(img,"Volkswagen SP2",'1.jpg')
         self.dataset.adicionar_imagem(img,"Volkswagen SP2",'2.jpg')
         self.assertEqual(1,len(os.listdir("imagens_teste/Volkswagen SP2")))
-
 
     def test_obter_exemplos(self):
         obter_exemplos(
