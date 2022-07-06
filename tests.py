@@ -44,6 +44,8 @@ class TestScraper(TestCase):
         len(os.listdir('imagens_teste/Chevrolet Opala 1977'))
         )
 
+
+
     def test_nao_salvar_foto_repetida(self):
         url = SCRAPER_TEST_CONFIG['url_base'].replace(
         "{}","Volkswagen SP2"
@@ -82,3 +84,19 @@ class TestScraper(TestCase):
     def tearDownClass(cls):
         shutil.rmtree('imagens_teste')
         cls.driver.close()
+
+class TestDataset(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.diretorio = SCRAPER_TEST_CONFIG['caminho_destino']
+        if cls.diretorio not in os.listdir():
+            os.mkdir(cls.diretorio)
+        cls.dataset = Dataset(SCRAPER_TEST_CONFIG['caminho_destino'])
+
+    def test_comparar_imagens(self):
+        self.assertTrue(
+            self.dataset.comparar_imagens(
+            "test_assets/belle belinha.jpg",
+            "test_assets/belle belinha reduzido.jpg"
+            )
+        )

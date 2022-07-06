@@ -2,6 +2,8 @@ import os, traceback
 from pathlib import Path
 
 import numpy as np
+from matplotlib import pyplot as plt
+from skimage import img_as_float
 from skimage.io import imread
 from skimage.metrics import structural_similarity
 from skimage.transform import resize
@@ -24,9 +26,22 @@ class Dataset:
     def comparar_imagens(self,imagem,imagem_2):
         imagem = imread(imagem)
         imagem_2 = imread(imagem_2)
-        imagem = resize(imagem,imagem_2.shape)
-        print(structural_similarity(imagem,imagem_2,channel_axis=2))
-        return structural_similarity(imagem,imagem_2,channel_axis=2) > self.limiar_similaridade
+        print(imagem.dtype,imagem_2.dtype)
+
+
+        if imagem.shape[0] * imagem.shape[1] > imagem_2.shape[0] * imagem_2.shape[1]:
+            imagem_maior = imagem
+            imagem_menor = imagem_2
+        else:
+            imagem_maior = imagem_2
+            imagem_menor = imagem
+
+        imagem_menor = resize(imagem_menor,imagem_maior.shape)
+        imagem_maior = img_as_float(imagem_maior)
+        print(imagem_menor.dtype,imagem_maior.dtype)
+
+        print(structural_similarity(imagem_menor,imagem_maior,channel_axis=-1))
+        return structural_similarity(imagem_menor,imagem_maior,channel_axis=-1) > self.limiar_similaridade
 
     def e_unico(self,caminho):
         caminho = Path(caminho)
