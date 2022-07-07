@@ -1,4 +1,4 @@
-import os, shutil
+import os, shutil, time
 from unittest import TestCase
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -30,6 +30,10 @@ class TestScraper(TestCase):
         imgs = obter_imgs(self.url,150,self.driver)
         self.assertTrue(len(imgs)>=150)
 
+    def test_obter_1500_imgs(self):
+        imgs = obter_imgs(self.url,1500,self.driver)
+        self.assertTrue(len(imgs)>=500)
+
     def test_salvar_fotos(self):
         salvar_fotos(
         self.url,
@@ -55,6 +59,20 @@ class TestScraper(TestCase):
         self.dataset.adicionar_imagem(img,"Volkswagen SP2",'2.jpg')
         self.assertEqual(1,len(os.listdir("imagens_teste/Volkswagen SP2")))
 
+    def test_nome_arquivo_salvo(self):
+        dataset = Dataset('test_assets')
+
+        salvar_fotos(
+            SCRAPER_TEST_CONFIG['url_base'],
+            "Gurgel Motomachine",
+            1,
+            self.driver,
+            dataset
+        )
+        self.assertEqual(3,len(os.listdir("test_assets/Gurgel Motomachine")))
+        self.assertTrue('2.jpg' in os.listdir("test_assets/Gurgel Motomachine"))
+        self.assertTrue('1.jpg' in os.listdir("test_assets/Gurgel Motomachine"))
+
     def test_obter_exemplos(self):
         obter_exemplos(
             SCRAPER_TEST_CONFIG['url_base'],
@@ -79,6 +97,10 @@ class TestScraper(TestCase):
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree('imagens_teste')
+        try:
+            os.remove("test_assets/Gurgel Motomachine/2.jpg")
+        except:
+            pass
         cls.driver.close()
 
 class TestDataset(TestCase):
@@ -88,11 +110,16 @@ class TestDataset(TestCase):
         if cls.diretorio not in os.listdir():
             os.mkdir(cls.diretorio)
         cls.dataset = Dataset(SCRAPER_TEST_CONFIG['caminho_destino'])
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree('imagens_teste')
 
     def test_comparar_imagens(self):
-        self.assertTrue(
-            self.dataset.comparar_imagens(
-            "test_assets/belle belinha.jpg",
-            "test_assets/belle belinha reduzido.jpg"
-            )
+        start = time.time()
+        comparacao = self.dataset.comparar_imagens(
+        "test_assets/belle belinha.jpg",
+        "test_assets/belle belinha reduzido.jpg"
         )
+        end = time.time()
+        print(end-start)
+        self.assertTrue(comparacao)

@@ -29,11 +29,14 @@ def rolar_pagina(driver):
 def obter_imgs(url,n_exemplos,driver):
     driver.get(url)
     imgs = listar_imgs(driver.page_source)
+    fim = driver.find_element(By.XPATH,'//div[text()="Parece que você chegou ao fim"]')
     while len(imgs) < n_exemplos:
-        n_atual = len(imgs)
         rolar_pagina(driver)
         imgs = listar_imgs(driver.page_source)
-        
+        if fim.is_displayed():
+            break
+
+    print(len(imgs))
     return imgs
 
 def salvar_fotos(url_base,categoria,n_exemplos,driver,dataset):

@@ -27,16 +27,9 @@ class Dataset:
         imagem = imread(imagem)
         imagem_2 = imread(imagem_2)
 
-        if imagem.size > imagem_2.size:
-            imagem_maior = imagem
-            imagem_menor = imagem_2
-        else:
-            imagem_maior = imagem_2
-            imagem_menor = imagem
-
-        imagem_menor = resize(imagem_menor,imagem_maior.shape)
-        imagem_maior = img_as_float(imagem_maior)
-        return structural_similarity(imagem_menor,imagem_maior,channel_axis=-1) > self.limiar_similaridade
+        imagem = resize(imagem,(50,50,3))
+        imagem_2 = resize(imagem_2,(50,50,3))
+        return structural_similarity(imagem,imagem_2,channel_axis=-1) > self.limiar_similaridade
 
     def e_unico(self,caminho):
         caminho = Path(caminho)
@@ -72,13 +65,18 @@ class Dataset:
             os.mkdir(f"{self.destino}/{categoria}")
             os.mkdir(f"{self.destino}/{categoria}/descartadas")
 
-        img_n=1
+        n_imagens_salvas = len(
+        os.listdir(os.path.join(self.destino,categoria))
+        ) - 1
+
+        img_n = n_imagens_salvas + 1
         for i in range(n_exemplos):
             try:
                 img = imgs[i]
             except:
                 break
             filename = f"{img_n}.jpg"
+            print(filename)
             self.adicionar_imagem(img,categoria,filename)
             img_n+=1
 
