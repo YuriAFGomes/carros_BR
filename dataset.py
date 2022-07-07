@@ -24,11 +24,11 @@ class Dataset:
             os.mkdir(self.destino)
 
     def comparar_imagens(self,imagem,imagem_2):
-        imagem = imread(imagem)
-        imagem_2 = imread(imagem_2)
+        imagem = imread(imagem,as_gray=True)
+        imagem_2 = imread(imagem_2,as_gray=True)
 
-        imagem = resize(imagem,(50,50,3))
-        imagem_2 = resize(imagem_2,(50,50,3))
+        imagem = resize(imagem,(100,100,1))
+        imagem_2 = resize(imagem_2,(100,100,1))
         return structural_similarity(imagem,imagem_2,channel_axis=-1) > self.limiar_similaridade
 
     def e_unico(self,caminho):
