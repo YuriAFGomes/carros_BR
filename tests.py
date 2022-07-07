@@ -51,13 +51,11 @@ class TestScraper(TestCase):
         url = SCRAPER_TEST_CONFIG['url_base'].replace(
         "{}","Volkswagen SP2"
         )
-        if "Volkswagen SP2" not in os.listdir(self.diretorio):
-            os.mkdir(os.path.join(self.diretorio,"Volkswagen SP2"))
 
         img = obter_imgs(self.url,1,self.driver)[0]
-        self.dataset.adicionar_imagem(img,"Volkswagen SP2",'1.jpg')
-        self.dataset.adicionar_imagem(img,"Volkswagen SP2",'2.jpg')
-        self.assertEqual(1,len(os.listdir("imagens_teste/Volkswagen SP2")))
+        imgs = [img,img]
+        self.dataset.adicionar_imagens(imgs,"Volkswagen SP2",2)
+        self.assertEqual(2,len(os.listdir("imagens_teste/Volkswagen SP2")))
 
     def test_nome_arquivo_salvo(self):
         dataset = Dataset('test_assets')

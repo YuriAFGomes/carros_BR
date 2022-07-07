@@ -56,9 +56,8 @@ class Dataset:
                 )
             except:
                 traceback.print_exc()
+        return file
 
-        if not self.e_unico(file):
-            os.remove(file)
 
     def adicionar_imagens(self,imgs,categoria,n_exemplos):
         if categoria not in os.listdir(self.destino):
@@ -76,8 +75,10 @@ class Dataset:
             except:
                 break
             filename = f"{img_n}.jpg"
-            print(filename)
-            self.adicionar_imagem(img,categoria,filename)
+            file = self.adicionar_imagem(img,categoria,filename)
+            if not self.e_unico(file):
+                os.remove(file)
+                continue
             img_n+=1
 
 if __name__ == "__main__":
