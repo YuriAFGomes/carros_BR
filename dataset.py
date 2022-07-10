@@ -10,18 +10,17 @@ from skimage.transform import resize
 from PIL import Image
 from urllib.request import urlretrieve
 
+
 class Dataset:
     def __init__(self,destino=None):
         if destino is not None:
-            self.destino = destino
-            if destino not in os.listdir():
-                os.mkdir(destino)
+            self.definir_destino(destino)
         self.limiar_similaridade = 0.95
 
     def definir_destino(self,destino):
         self.destino = destino
-        if self.destino not in os.listdir():
-            os.mkdir(self.destino)
+        if not os.path.exists(destino):
+            os.mkdir(destino)
 
     def comparar_imagens(self,imagem,imagem_2):
         imagem = imread(imagem,as_gray=True)
@@ -57,7 +56,6 @@ class Dataset:
             except:
                 traceback.print_exc()
         return file
-
 
     def adicionar_imagens(self,imgs,categoria,n_exemplos):
         if categoria not in os.listdir(self.destino):

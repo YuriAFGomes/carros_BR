@@ -3,6 +3,8 @@ from functools import partial
 from tkinter import Tk, ttk, N,W,E,S, IntVar
 from PIL import Image,ImageTk, ImageOps
 
+from dataset import Dataset
+
 class Classificador:
     def __init__(self,diretorio):
         self.diretorio = diretorio
@@ -52,7 +54,6 @@ class Classificador:
         botao_descartar.grid(column=1,row=0)
 
 
-
     def mostrar_imagem(self):
         loaded_image = Image.open(
             os.path.join(self.diretorio,self.files[self.current_image_index])
@@ -71,15 +72,14 @@ class Classificador:
                 os.path.join(self.diretorio,file),
                 os.path.join(self.diretorio,new_name)
             )
-        del self.files[-1]
 
     def descartar_imagem(self,*args):
-        n_descartada = len(os.listdir(
+        n_descartadas = len(os.listdir(
             os.path.join(self.diretorio,"descartadas")
         )) + 1
         os.rename(
         os.path.join(self.diretorio,self.files[self.current_image_index]),
-        os.path.join(self.diretorio,"descartadas",f"000{n_descartada}.jpg"[-8:]),
+        os.path.join(self.diretorio,"descartadas",f"000{n_descartadas}.jpg"[-8:]),
         )
         del self.files[self.current_image_index]
         self.atualizar_nomes_imagens()
