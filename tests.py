@@ -112,12 +112,61 @@ class TestDataset(TestCase):
     def tearDownClass(cls):
         shutil.rmtree('imagens_teste')
 
+    def setUp(self):
+        try:
+            os.mkdir(os.path.join(self.diretorio,"Gurgel X15"))
+        except:
+            pass
+    def tearDown(self):
+        shutil.rmtree(os.path.join(self.diretorio,"Gurgel X15"))
+
+    def test_renomear_arquivos(self):
+        src = "test_assets/gurgel x15.jpg"
+        caminho = os.path.join(self.diretorio,"Gurgel X15")
+        shutil.copy(src,os.path.join(caminho,"1.jpg"))
+        shutil.copy(src,os.path.join(caminho,"3.jpg"))
+        shutil.copy(src,os.path.join(caminho,"4.jpg"))
+
+        self.dataset.renomear_arquivos("Gurgel X15",1)
+        dir = os.listdir(caminho)
+        self.assertEqual(3,len(dir))
+        self.assertTrue('1.jpg' in dir)
+        self.assertTrue('2.jpg' in dir)
+        self.assertTrue('3.jpg' in dir)
+        self.assertTrue('4.jpg' not in dir)
+
+    def test_descartar_imagem(self):
+        src = "test_assets/gurgel x15.jpg"
+        caminho = os.path.join(self.diretorio,"Gurgel X15")
+        shutil.copy(src,os.path.join(caminho,"1.jpg"))
+        shutil.copy(src,os.path.join(caminho,"2.jpg"))
+        shutil.copy(src,os.path.join(caminho,"3.jpg"))
+
+        os.mkdir(os.path.join(caminho,"descartadas"))
+
+        dir = os.listdir(caminho)
+        self.dataset.descartar_imagem("Gurgel X15",'2.jpg')
+
+        self.assertEqual(1,len(os.listdir(os.path.join(caminho,"descartadas"))))
+        self.assertEqual(3,len(os.listdir(caminho)))
+        self.assertTrue("3.jpg" not in os.listdir(caminho))
+        self.assertTrue("2.jpg" in os.listdir(caminho))
+
+        self.dataset.descartar_imagem("Gurgel X15",'1.jpg')
+
+        self.assertEqual(2,len(os.listdir(caminho)))
+        self.assertEqual(2,len(os.listdir(os.path.join(caminho,"descartadas"))))
+        self.assertTrue("2.jpg" not in os.listdir(caminho))
+        self.assertTrue("1.jpg" in os.listdir(caminho))
+
+        print(os.listdir(os.path.join(caminho,"descartadas")))
+        self.assertTrue("2.jpg" in os.listdir(os.path.join(caminho,"descartadas")))
+        self.assertTrue("1.jpg" in os.listdir(os.path.join(caminho,"descartadas")))
+
     def test_comparar_imagens(self):
-        start = time.time()
         comparacao = self.dataset.comparar_imagens(
-        "test_assets/belle belinha.jpg",
-        "test_assets/belle belinha reduzido.jpg"
+            "test_assets/belle belinha.jpg",
+            "test_assets/belle belinha reduzido.jpg"
         )
         end = time.time()
-        print(end-start)
         self.assertTrue(comparacao)

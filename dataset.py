@@ -57,6 +57,27 @@ class Dataset:
                 traceback.print_exc()
         return file
 
+    def renomear_arquivos(self,categoria,index=0):
+        caminho = os.path.join(self.destino,categoria)
+        for item in os.listdir(caminho)[index:]:
+            if not os.path.isdir(os.path.join(caminho,item)):
+                novo_nome = f"{int(item.split('.')[0])-1}.jpg"
+                os.rename(
+                    os.path.join(caminho,item),
+                    os.path.join(caminho,novo_nome)
+                )
+
+    def descartar_imagem(self,categoria,filename):
+        index_imagem = int(filename.split(".")[0])-1
+        caminho_categoria = os.path.join(self.destino,categoria)
+        n_descartadas = len(os.listdir(os.path.join(caminho_categoria,"descartadas")))
+        novo_filename = f"{n_descartadas+1}.jpg"
+        os.rename(
+            os.path.join(caminho_categoria,filename),
+            os.path.join(caminho_categoria,"descartadas",novo_filename)
+        )
+        self.renomear_arquivos(categoria,index_imagem)
+
     def adicionar_imagens(self,imgs,categoria,n_exemplos):
         if categoria not in os.listdir(self.destino):
             os.mkdir(f"{self.destino}/{categoria}")
