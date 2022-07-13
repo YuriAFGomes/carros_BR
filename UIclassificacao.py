@@ -28,7 +28,9 @@ class Classificador:
         self.criar_botoes()
 
         self.root.bind('d',self.descartar_imagem)
+        self.root.bind('<Delete>',self.descartar_imagem)
         self.root.bind('<Right>',self.proxima_imagem)
+        self.root.bind('<Left>',self.imagem_anterior)
 
         self.selecionar_categoria()
         self.root.mainloop()
@@ -36,6 +38,7 @@ class Classificador:
     def definir_categoria(self,categoria):
         self.categoria = categoria
         self.files = [file for file in os.listdir(os.path.join(self.diretorio,self.categoria)) if not os.path.isdir(os.path.join(self.diretorio,self.categoria,file))]
+        self.files = sorted(self.files,key=len)
         self.mostrar_imagem()
 
     def selecionar_categoria(self):
@@ -71,6 +74,13 @@ class Classificador:
         botoes.columnconfigure(1,weight=1)
         botoes.columnconfigure(2,weight=1)
 
+        botao_anterior = ttk.Button(
+        botoes,
+        text="Anterior",
+        command=self.imagem_anterior
+        )
+        botao_anterior.grid(column=0,row=0,sticky=W)
+
         botao_proxima = ttk.Button(
         botoes,
         text="Próxima",
@@ -99,13 +109,17 @@ class Classificador:
     def descartar_imagem(self,*args):
         self.dataset.descartar_imagem(
             self.categoria,
-            self.files[current_image_index]
+            self.files[self.current_image_index]
         )
         del self.files[self.current_image_index]
         self.mostrar_imagem()
 
     def proxima_imagem(self,*args):
         self.current_image_index += 1
+        self.mostrar_imagem()
+
+    def imagem_anterior(self,*args):
+        self.current_image_index -= 1
         self.mostrar_imagem()
 
 diretorio = sys.argv[1]

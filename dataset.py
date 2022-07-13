@@ -60,13 +60,15 @@ class Dataset:
 
     def renomear_arquivos(self,categoria,index=0):
         caminho = os.path.join(self.destino,categoria)
-        for item in os.listdir(caminho)[index:]:
-            if not os.path.isdir(os.path.join(caminho,item)):
-                novo_nome = f"{int(item.split('.')[0])-1}.jpg"
-                os.rename(
-                    os.path.join(caminho,item),
-                    os.path.join(caminho,novo_nome)
-                )
+        files = [file for file in os.listdir(caminho) if not os.path.isdir(os.path.join(caminho,file))]
+        files = sorted(files,key=len)
+
+        for item in files[index:]:
+            novo_nome = f"{files.index(item)+1}.jpg"
+            os.rename(
+                os.path.join(caminho,item),
+                os.path.join(caminho,novo_nome)
+            )
 
     def descartar_imagem(self,categoria,filename):
         index_imagem = int(filename.split(".")[0])-1
