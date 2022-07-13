@@ -12,15 +12,16 @@ from urllib.request import urlretrieve
 
 
 class Dataset:
-    def __init__(self,destino=None):
-        if destino is not None:
-            self.definir_destino(destino)
+    def __init__(self,destino):
         self.limiar_similaridade = 0.95
-
-    def definir_destino(self,destino):
         self.destino = destino
         if not os.path.exists(destino):
             os.mkdir(destino)
+        self.categorias = self.atualizar_categorias()
+
+    def atualizar_categorias(self):
+        categorias = os.listdir(self.destino)
+        return categorias
 
     def comparar_imagens(self,imagem,imagem_2):
         imagem = imread(imagem,as_gray=True)
@@ -82,6 +83,7 @@ class Dataset:
         if categoria not in os.listdir(self.destino):
             os.mkdir(f"{self.destino}/{categoria}")
             os.mkdir(f"{self.destino}/{categoria}/descartadas")
+            self.atualizar_categorias()
 
         n_imagens_salvas = len(
         os.listdir(os.path.join(self.destino,categoria))
