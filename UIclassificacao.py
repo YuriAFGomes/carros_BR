@@ -23,7 +23,12 @@ class Classificador:
 
         self.current_image_index = 0
 
-        self.image_label = ttk.Label(self.mainframe)
+        self.progressoVar = StringVar()
+        self.image_label = ttk.Label(
+            self.mainframe,
+            textvariable=self.progressoVar,
+            compound='top'
+        )
         self.image_label.grid(column=0,row=0,sticky=(N,W,E,S))
         self.criar_botoes()
 
@@ -39,6 +44,7 @@ class Classificador:
         self.categoria = categoria
         self.files = [file for file in os.listdir(os.path.join(self.diretorio,self.categoria)) if not os.path.isdir(os.path.join(self.diretorio,self.categoria,file))]
         self.files = sorted(self.files,key=len)
+
         self.mostrar_imagem()
 
     def selecionar_categoria(self):
@@ -105,6 +111,7 @@ class Classificador:
         )
         self.image_label.configure(image=image)
         self.image_label.image = image
+        self.progressoVar.set(f"{self.current_image_index+1}/{len(self.files)}")
 
     def descartar_imagem(self,*args):
         self.dataset.descartar_imagem(
