@@ -19,7 +19,7 @@ class Classificador:
         self.mainframe = ttk.Frame(self.root,padding=12)
         self.mainframe.grid(column=0,row=0,sticky=(N,W,E,S))
 
-        self.mainframe.columnconfigure(0,weight=1)
+        self.mainframe.columnconfigure(1,weight=1)
         self.mainframe.rowconfigure(0,weight=1)
 
         self.carregar_progresso()
@@ -29,7 +29,7 @@ class Classificador:
             textvariable=self.progressoVar,
             compound='top'
         )
-        self.image_label.grid(column=0,row=0,sticky=(N,W,E,S))
+        self.image_label.grid(column=0,row=1,sticky=(N,W,E,S))
         self.criar_botoes()
 
         print(self.dataset.categorias)
@@ -91,9 +91,20 @@ class Classificador:
         w.grab_set()
         w.wait_window()
 
+    def trocar_categoria(self):
+        self.salvar_progresso()
+        self.selecionar_categoria()
+        
     def criar_botoes(self):
+        mudar_categoria = ttk.Button(
+            self.mainframe,
+            text="Mudar categoria",
+            command=self.trocar_categoria
+        )
+        mudar_categoria.grid(row=0,column=0,sticky=E)
+
         botoes = ttk.Frame(self.mainframe)
-        botoes.grid(row=1,column=0,sticky=(W,E))
+        botoes.grid(row=2,column=0,sticky=(W,E))
         botoes.columnconfigure(0,weight=1)
         botoes.columnconfigure(1,weight=1)
         botoes.columnconfigure(2,weight=1)
