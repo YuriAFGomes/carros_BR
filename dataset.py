@@ -20,7 +20,8 @@ class Dataset:
         self.categorias = self.atualizar_categorias()
 
     def atualizar_categorias(self):
-        categorias = os.listdir(self.destino)
+        categorias = [item for item in os.listdir(self.destino) if os.path.isdir(os.path.join(self.destino,item))]
+        print(categorias)
         return categorias
 
     def comparar_imagens(self,imagem,imagem_2):
