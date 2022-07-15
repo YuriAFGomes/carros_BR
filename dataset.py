@@ -21,7 +21,6 @@ class Dataset:
 
     def atualizar_categorias(self):
         categorias = [item for item in os.listdir(self.destino) if os.path.isdir(os.path.join(self.destino,item))]
-        print(categorias)
         return categorias
 
     def comparar_imagens(self,imagem,imagem_2):

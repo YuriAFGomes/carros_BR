@@ -31,8 +31,6 @@ class Classificador:
         )
         self.image_label.grid(column=0,row=1,sticky=(N,W,E,S))
         self.criar_botoes()
-
-        print(self.dataset.categorias)
         self.selecionar_categoria()
         self.root.mainloop()
 
@@ -94,7 +92,7 @@ class Classificador:
     def trocar_categoria(self):
         self.salvar_progresso()
         self.selecionar_categoria()
-        
+
     def criar_botoes(self):
         mudar_categoria = ttk.Button(
             self.mainframe,
