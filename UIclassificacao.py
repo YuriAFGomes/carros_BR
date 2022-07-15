@@ -19,8 +19,8 @@ class Classificador:
         self.mainframe = ttk.Frame(self.root,padding=12)
         self.mainframe.grid(column=0,row=0,sticky=(N,W,E,S))
 
-        self.mainframe.columnconfigure(1,weight=1)
-        self.mainframe.rowconfigure(0,weight=1)
+        self.mainframe.columnconfigure(0,weight=1)
+        self.mainframe.rowconfigure(1,weight=1)
 
         self.carregar_progresso()
         self.progressoVar = StringVar()
@@ -185,7 +185,7 @@ class Classificador:
             self.categoria,
             self.files[self.current_image_index]
         )
-        del self.files[self.current_image_index]
+        self.atualizar_files()
         self.mostrar_imagem()
 
     def proxima_imagem(self,*args):
