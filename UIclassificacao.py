@@ -50,6 +50,11 @@ class Classificador:
         self.root.destroy()
         self.salvar_progresso()
 
+    def atualizar_files(self):
+        dir = os.listdir(os.path.join(self.diretorio,self.categoria))
+        self.files = [file for file in dir if not os.path.isdir(os.path.join(self.diretorio,self.categoria,file))]
+        self.files = sorted(self.files,key=len)
+
     def definir_categoria(self,categoria):
         if categoria in self.progresso:
             self.current_image_index = self.progresso[categoria]
@@ -57,10 +62,8 @@ class Classificador:
             self.current_image_index = 0
 
         self.categoria = categoria
-        dir = os.listdir(os.path.join(self.diretorio,self.categoria))
-        self.files = [file for file in dir if not os.path.isdir(os.path.join(self.diretorio,self.categoria,file))]
-        self.files = sorted(self.files,key=len)
 
+        self.atualizar_files()
         self.mostrar_imagem()
 
     def selecionar_categoria(self):
@@ -104,34 +107,46 @@ class Classificador:
         botoes = ttk.Frame(self.mainframe)
         botoes.grid(row=2,column=0,sticky=(W,E))
         botoes.columnconfigure(0,weight=1)
-        botoes.columnconfigure(1,weight=1)
-        botoes.columnconfigure(2,weight=1)
+        # botoes.columnconfigure(1,weight=1)
+        # botoes.columnconfigure(2,weight=1)
+        botoes.columnconfigure(3,weight=1)
 
         botao_anterior = ttk.Button(
-        botoes,
-        text="Anterior",
-        command=self.imagem_anterior
+            botoes,
+            text="Anterior",
+            command=self.imagem_anterior
         )
         botao_anterior.grid(column=0,row=0,sticky=W)
 
-        botao_proxima = ttk.Button(
-        botoes,
-        text="Próxima",
-        command=self.proxima_imagem
+        botao_desfazer = ttk.Button(
+            botoes,
+            text="Desfazer (U)",
+            command = self.desfazer
         )
-        botao_proxima.grid(column=2,row=0,sticky=E)
+        botao_desfazer.grid(row=0,column=1)
 
         botao_descartar = ttk.Button(
-        botoes,
-        text="Descartar (D)",
-        command=self.descartar_imagem
+            botoes,
+            text="Descartar (D)",
+            command=self.descartar_imagem
         )
-        botao_descartar.grid(column=1,row=0)
+        botao_descartar.grid(column=2,row=0)
+
+        botao_proxima = ttk.Button(
+            botoes,
+            text="Próxima",
+            command=self.proxima_imagem
+        )
+        botao_proxima.grid(column=3,row=0,sticky=E)
 
         self.root.bind('d',self.descartar_imagem)
+        self.root.bind('u',self.desfazer)
         self.root.bind('<Delete>',self.descartar_imagem)
         self.root.bind('<Right>',self.proxima_imagem)
         self.root.bind('<Left>',self.imagem_anterior)
+
+    def atualizar_progresso(self):
+        self.progressoVar.set(f"{self.current_image_index+1}/{len(self.files)}")
 
     def mostrar_imagem(self):
         loaded_image = Image.open(
@@ -147,7 +162,23 @@ class Classificador:
         )
         self.image_label.configure(image=image)
         self.image_label.image = image
-        self.progressoVar.set(f"{self.current_image_index+1}/{len(self.files)}")
+        self.atualizar_progresso()
+
+    def desfazer(self,*args):
+        dir = os.path.join(self.diretorio,self.categoria)
+        descartadas = os.listdir(
+            os.path.join(dir,'descartadas')
+        )
+        if len(descartadas) == 0:
+            return
+        ultima = sorted(descartadas,key=len)[-1]
+        novo_nome = f"{len(self.files)+1}.jpg"
+        os.rename(
+            os.path.join(dir,'descartadas',ultima),
+            os.path.join(dir,novo_nome)
+        )
+        self.atualizar_files()
+        self.atualizar_progresso()
 
     def descartar_imagem(self,*args):
         self.dataset.descartar_imagem(
