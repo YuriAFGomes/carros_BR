@@ -180,20 +180,21 @@ class Classificador:
         self.atualizar_files()
         self.atualizar_progresso()
 
+    def proxima_imagem(self,*args):
+        self.current_image_index = (self.current_image_index + 1)%len(self.files)
+        self.mostrar_imagem()
+
     def descartar_imagem(self,*args):
         self.dataset.descartar_imagem(
             self.categoria,
             self.files[self.current_image_index]
         )
         self.atualizar_files()
+        self.current_image_index = self.current_image_index%len(self.files)
         self.mostrar_imagem()
-
-    def proxima_imagem(self,*args):
-        self.current_image_index += 1
-        self.mostrar_imagem()
-
+  
     def imagem_anterior(self,*args):
-        self.current_image_index -= 1
+        self.current_image_index = (self.current_image_index - 1)%len(self.files)
         self.mostrar_imagem()
 
 diretorio = sys.argv[1]

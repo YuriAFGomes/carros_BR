@@ -17,6 +17,8 @@ class Dataset:
         self.destino = destino
         if not os.path.exists(destino):
             os.mkdir(destino)
+        if not os.path.exists(os.path.join(self.destino,'descartadas')):
+            os.mkdir(os.path.join(self.destino,'descartadas'))
         self.categorias = self.atualizar_categorias()
 
     def atualizar_categorias(self):
@@ -71,6 +73,9 @@ class Dataset:
             )
 
     def descartar_imagem(self,categoria,filename):
+        if not os.path.exists(os.path.join(self.destino,categoria,'descartadas')):
+            os.mkdir(os.path.join(self.destino,categoria,'descartadas'))
+
         index_imagem = int(filename.split(".")[0])-1
         caminho_categoria = os.path.join(self.destino,categoria)
         n_descartadas = len(os.listdir(os.path.join(caminho_categoria,"descartadas")))
