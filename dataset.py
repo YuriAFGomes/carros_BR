@@ -13,12 +13,12 @@ from urllib.request import urlretrieve
 
 class Dataset:
     def __init__(self,destino):
-        self.limiar_similaridade = 0.95
         self.destino = destino
         if not os.path.exists(destino):
             os.mkdir(destino)
         if not os.path.exists(os.path.join(self.destino,'descartadas')):
             os.mkdir(os.path.join(self.destino,'descartadas'))
+        self.limiar_similaridade = 0.95
         self.categorias = self.atualizar_categorias()
 
     def atualizar_categorias(self):
@@ -108,6 +108,3 @@ class Dataset:
                 os.remove(file)
                 continue
             img_n+=1
-
-if __name__ == "__main__":
-    main()
